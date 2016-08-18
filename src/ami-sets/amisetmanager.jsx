@@ -2,8 +2,10 @@ import React from 'react';
 import {Col, ButtonToolbar, Button, Glyphicon, Row, Table} from 'react-bootstrap';
 import _ from 'lodash';
 import AmiSetEditor from './amiseteditor';
+import WorkerTypeList from './workertypelist';
 import * as utils from '../lib/utils';
 import taskcluster from 'taskcluster-client';
+
 // temporary until we have an updated taskcluster-client with the new methods in it
 import reference from './temp-aws-prov-reference';
 
@@ -15,9 +17,9 @@ const AmiSetManager = React.createClass({
       },
       clientOpts: {
         awsProvisioner: {
-          baseUrl: 'https://aws-provisioner.taskcluster.net/v1',
-        },
-      },
+          baseUrl: 'http://localhost:5557/v1'
+        }
+      }
     }),
     // Serialize state.selectedAmiSet to location.hash as string
     utils.createLocationHashMixin({
@@ -45,14 +47,14 @@ const AmiSetManager = React.createClass({
   render() {
     return (
       <Row>
-        <Col md={5}>
+        <Col md={4}>
           {this.renderAmiSetsTable()}
           <ButtonToolbar>
             <Button
               bsStyle="primary"
               onClick={this.selectAmiSet.bind(this, '')}
               disabled={this.state.selectedAmiSet === ''}>
-              <Glyphicon glyph="plus" /> Add AMI Set
+              <Glyphicon glyph="plus"/> Create new AMI Set
             </Button>
             <Button
               bsStyle="success"
@@ -62,7 +64,11 @@ const AmiSetManager = React.createClass({
             </Button>
           </ButtonToolbar>
         </Col>
-        <Col md={7}>
+        <Col md={4}>
+          <WorkerTypeList
+            currentAmiSet={this.state.selectedAmiSet} />
+        </Col>
+        <Col md={4}>
           <AmiSetEditor
             currentAmiSet={this.state.selectedAmiSet}
             reloadAmiSet={this.reloadAmiSet}
