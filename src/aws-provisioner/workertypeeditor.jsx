@@ -10,6 +10,9 @@ import 'codemirror/mode/javascript/javascript';
 import '../lib/codemirror/json-lint';
 
 /* eslint-disable no-param-reassign */
+// temporary until we have an updated taskcluster-client with the new methods in it
+var reference = require('../ami-sets/temp-aws-prov-reference');
+
 /** Encode/decode UserData property of object */
 const encodeUserData = obj => {
   if (obj && obj.UserData) {
