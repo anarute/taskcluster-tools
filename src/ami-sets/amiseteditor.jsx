@@ -14,10 +14,11 @@ import './amiseteditor.less';
 
 const initialAmiSet = {
   amis: [{
-    region: '...',
-    hvm: '...',
-    pv: '...',
+    region: '',
+    hvm: '',
+    pv: ''
   }],
+  invalidAmis: []
 };
 
 /** Create amiSet editor/viewer (same thing) */
@@ -124,15 +125,18 @@ const AmiSetEditor = React.createClass({
                   <span>
                     {
                       this.renderWaitFor('invalidAmis') || (
-                        this.state.invalidAmis.length ? (
+                        !this.state.invalidAmis.valid ? (
                           <bs.Alert bsStyle="danger">
                             <strong>DO NOT use this AMI set</strong>
                             <p>This AMI set contains the following invalid AMIs:</p>
                             <ul>
                             {
-                              this.state.invalidAmis.map(ami => {
+                              this.state.invalidAmis.invalidAmis.map(ami => {
                                 return (
-                                  <li key={ami.imageId}><strong>{ami.imageId}</strong> ({ami.region})</li>
+                                  <li key={ami.imageId}>
+                                    <strong>{ami.imageId}</strong> ({ami.region})
+                                    {ami.virtualizationType ? ' - wrong virtualization type: this AMI is ' + ami.virtualizationType : ''}
+                                  </li>
                                 )
                               })
                             }
@@ -269,6 +273,10 @@ const AmiSetEditor = React.createClass({
       this.setState({
         editing: false,
         error: null,
+        invalidAmis: {
+          valid: true,
+          invalidAmis: []
+        }
       });
       this.props.selectAmiSet(this.state.amiSet);
       this.props.refreshAmiSetsList();
