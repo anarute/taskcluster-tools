@@ -16,9 +16,9 @@ const initialAmiSet = {
   amis: [{
     region: '',
     hvm: '',
-    pv: ''
+    pv: '',
   }],
-  invalidAmis: []
+  invalidAmis: [],
 };
 
 /** Create amiSet editor/viewer (same thing) */
@@ -30,8 +30,8 @@ const AmiSetEditor = React.createClass({
       },
       clientOpts: {
         awsProvisioner: {
-          baseUrl: 'http://localhost:5557/v1'
-        }
+          baseUrl: 'http://localhost:5557/v1',
+        },
       },
       reloadOnProps: ['currentAmiSet'],
     }),
@@ -59,7 +59,7 @@ const AmiSetEditor = React.createClass({
       editing: true,
       working: false,
       error: null,
-      invalidAmis: []
+      invalidAmis: [],
     };
   },
 
@@ -74,20 +74,12 @@ const AmiSetEditor = React.createClass({
         working: false,
         error: null,
       };
-    } else {
-      return {
-        amiSet: this.props.currentAmiSet,
-        amis: this.awsProvisioner.amiSet(this.props.currentAmiSet),
-        invalidAmis: this.awsProvisioner.validateAmiSet(this.props.currentAmiSet),
-        editing: false,
-        working: false,
-        error: null
-      };
     }
 
     return {
       amiSet: this.props.currentAmiSet,
       amis: this.awsProvisioner.amiSet(this.props.currentAmiSet),
+      invalidAmis: this.awsProvisioner.validateAmiSet(this.props.currentAmiSet),
       editing: false,
       working: false,
       error: null,
@@ -126,31 +118,32 @@ const AmiSetEditor = React.createClass({
                     {
                       this.renderWaitFor('invalidAmis') || (
                         !this.state.invalidAmis.valid ? (
-                          <bs.Alert bsStyle="danger">
+                          <Alert bsStyle="danger">
                             <strong>DO NOT use this AMI set</strong>
                             <p>This AMI set contains the following invalid AMIs:</p>
                             <ul>
-                            {
-                              this.state.invalidAmis.invalidAmis.map(ami => {
-                                return (
-                                  <li key={ami.imageId}>
-                                    <strong>{ami.imageId}</strong> ({ami.region})
-                                    {ami.virtualizationType ? ' - wrong virtualization type: this AMI is ' + ami.virtualizationType : ''}
-                                  </li>
+                              {
+                                this.state.invalidAmis.invalidAmis.map(ami => {
+                                  return (
+                                    <li key={ami.imageId}>
+                                      <strong>{ami.imageId}</strong> ({ami.region})
+                                      {ami.virtualizationType} ?
+                                      `- wrong virtualization type: this AMI is {ami.virtualizationType}`
+                                    </li>
+                                  );}
                                 )
-                              })
-                            }
+                              }
                             </ul>
-                          </bs.Alert>
+                          </Alert>
                         ) : (
-                          <bs.Alert bsStyle="success">
+                          <Alert bsStyle="success">
                             All AMIs from this set are still valid.
-                          </bs.Alert>
+                          </Alert>
                         )
                       )
                     }
-                    </span>
                     <pre>{JSON.stringify(_.pick(this.state.amis, ['amis']), null, 2)}</pre>
+
                     <ButtonToolbar>
                       <Button
                         bsStyle="success"
@@ -158,6 +151,7 @@ const AmiSetEditor = React.createClass({
                         <Glyphicon glyph="pencil" /> Edit AMI Set
                       </Button>
                     </ButtonToolbar>
+                  </span>
                 )
               }
             </div>
@@ -247,9 +241,9 @@ const AmiSetEditor = React.createClass({
   },
 
   async validateAmiSet() {
-    let invalidAmis = await this.awsProvisioner.validateAmiSet(this.props.currentAmiSet);
+    const invalidAmis = await this.awsProvisioner.validateAmiSet(this.props.currentAmiSet);
     this.setState({
-      invalidAmis: invalidAmis
+      invalidAmis: invalidAmis,
     });
   },
 
@@ -275,8 +269,8 @@ const AmiSetEditor = React.createClass({
         error: null,
         invalidAmis: {
           valid: true,
-          invalidAmis: []
-        }
+          invalidAmis: [],
+        },
       });
       this.props.selectAmiSet(this.state.amiSet);
       this.props.refreshAmiSetsList();

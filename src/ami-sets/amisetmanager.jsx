@@ -17,9 +17,9 @@ const AmiSetManager = React.createClass({
       },
       clientOpts: {
         awsProvisioner: {
-          baseUrl: 'http://localhost:5557/v1'
-        }
-      }
+          baseUrl: 'http://localhost:5557/v1',
+        },
+      },
     }),
     // Serialize state.selectedAmiSet to location.hash as string
     utils.createLocationHashMixin({
@@ -54,7 +54,7 @@ const AmiSetManager = React.createClass({
               bsStyle="primary"
               onClick={this.selectAmiSet.bind(this, '')}
               disabled={this.state.selectedAmiSet === ''}>
-              <Glyphicon glyph="plus"/> Create new AMI Set
+              <Glyphicon glyph="plus" /> Create new AMI Set
             </Button>
             <Button
               bsStyle="success"
